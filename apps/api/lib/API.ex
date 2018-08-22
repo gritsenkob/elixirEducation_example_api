@@ -1,13 +1,9 @@
 defmodule API do
-  use Application
-  require Logger
+  @moduledoc """
+  API keeps the contexts that define your domain
+  and business logic.
 
-  def start(_type, _args) do
-    children = [
-      Plug.Adapters.Cowboy.child_spec(:http, APIRouter, [], port: 8099)
-    ]
-
-    Logger.info("Started application")
-    Supervisor.start_link(children, strategy: :one_for_one)
-  end
+  Contexts are also responsible for managing your data, regardless
+  if it comes from the database, an external API or others.
+  """
 end
