@@ -10,16 +10,16 @@ defmodule DAL.Schemas.Currency do
     field(:circulating_supply, :integer)
     field(:maxSupply, :integer)
     field(:sourceLastUpdated, :integer)
-    
+
     has_many :currencyRate, DAL.Schemas.CurrencyRate
 
     timestamps()
   end
 
-  @required_fields ~w(name symbol)
+  @required_fields ~w()
   @optional_fields ~w()
 
-  def changeset(currency, params \\ :empty) do
+  def changeset(currency, params \\ %{}) do
     currency
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)

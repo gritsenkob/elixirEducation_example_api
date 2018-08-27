@@ -8,7 +8,7 @@ defmodule APIWeb.Router do
   scope "/api", APIWeb do
     pipe_through :api
 
-    get "/getAccount/:id", MainController, :getAccount
+    get "/refreshCurrency", MainController, :refreshCurrency
 
     post "/setAccount", MainController, :setAccount
   end
