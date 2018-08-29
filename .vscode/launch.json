@@ -12,6 +12,13 @@
         },
         {
             "type": "mix_task",
+            "name": "mix phoenix server",
+            "request": "launch",
+            "task": "phx.server",
+            "projectDir": "${workspaceRoot}"
+        },
+        {
+            "type": "mix_task",
             "name": "mix test",
             "request": "launch",
             "task": "test",

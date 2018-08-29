@@ -6,11 +6,13 @@ defmodule API.CurrenciesSyncWorker do
   alias DAL.Repo
   alias DAL.Schemas.{Currency, CurrencyRate}
 
+  @spec start_link() :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link do
     GenServer.start_link(__MODULE__, %{})
   end
 
   @impl true
+  @spec init(any()) :: {:ok, any()}
   def init(stack) do
     {:ok, stack}
   end
@@ -33,33 +35,29 @@ defmodule API.CurrenciesSyncWorker do
   end
 
   def sync(startPosition \\ 1) do
-    IO.puts("Sync started at position: #{startPosition}")
-    response = HTTPotion.get("https://api.coinmarketcap.com/v2/ticker/?start=#{startPosition}")
-    responseData = Poison.decode!(response.body)
-    if responseData["data"] != nil do
-      Enum.map(responseData["data"], fn {_id, currency} ->
-        insertOrUpdate(currency)
-      end)
-    end
+    try do
+      IO.puts("Sync started at position: #{startPosition}")
 
-    case responseData["data"] != nil do
-      true -> sync(startPosition + 100)
-      false -> :ok
+      response = HTTPotion.get("https://api.coinmarketcap.com/v2/ticker/?start=#{startPosition}")
+      responseData = Poison.decode!(response.body)
+
+      data = responseData["data"]
+      if data != nil do
+        Enum.map(data, fn {_id, currency} ->
+          insertOrUpdate(currency)
+        end)
+
+        sync(startPosition + 100)
+      end
+    catch
+      :exit, _ -> "exit blocked" |> IO.puts
     end
   end
 
   defp insertOrUpdate(currency_json) do
+    currency = try_load_currency_from_db(currency_json["id"])
 
-    currency_rate_json = currency_json["quotes"]["USD"]
-    currency_rate_json = Map.put(currency_rate_json, "currency_id", currency_json["id"])
-
-    query =
-      from(
-        cur in DAL.Schemas.Currency,
-        where: cur.id == ^currency_json["id"]
-      )
-    currency = Repo.one(query)
-
+    currency_rate_json = get_currency_rate_json(currency_json)
     if currency != nil do
       if currency.last_updated != currency_json["last_updated"] do
         IO.puts("update data")
@@ -79,6 +77,20 @@ defmodule API.CurrenciesSyncWorker do
     end
   end
 
+  defp get_currency_rate_json(currency_json) do
+    currency_json["quotes"]["USD"]
+    |> Map.put("currency_id", currency_json["id"])
+  end
+
+  defp try_load_currency_from_db(id) do
+    query =
+      from(
+        cur in DAL.Schemas.Currency,
+        where: cur.id == ^id
+      )
+    Repo.one(query)
+  end
+
   # TODO parse currency rate
   defp insert_new_currency_rate(currency_rate_json) do
     IO.puts("insert new currency rate")
@@ -88,7 +100,7 @@ defmodule API.CurrenciesSyncWorker do
 
 
   defp schedule_sync() do
-    minutes = 5
+    minutes = 10
     IO.puts("Schedule sync at #{minutes} minutes")
     Process.send_after(self(), :sync, minutes * 60 * 1000)
   end

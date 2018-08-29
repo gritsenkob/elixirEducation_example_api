@@ -1,4 +1,5 @@
 defmodule DAL.Schemas.Currency do
+  @derive {Poison.Encoder, except: [:__meta__, :currencyRate]}
   use Ecto.Schema
   import Ecto.Changeset
 
