@@ -29,7 +29,7 @@ defmodule API.CurrenciesSyncWorker do
 
   # TODO find normal name for func
   def infiniteSync do
-    sync()
+    #sync()
     # Reschedule once more
     schedule_sync()
   end
@@ -104,4 +104,5 @@ defmodule API.CurrenciesSyncWorker do
     IO.puts("Schedule sync at #{minutes} minutes")
     Process.send_after(self(), :sync, minutes * 60 * 1000)
   end
+
 end
