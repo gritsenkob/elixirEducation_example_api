@@ -31,7 +31,6 @@ defmodule API.CurrenciesSyncWorker do
     {:noreply}
   end
 
-
   # TODO find normal name for func
   def infiniteSync do
     #sync()
