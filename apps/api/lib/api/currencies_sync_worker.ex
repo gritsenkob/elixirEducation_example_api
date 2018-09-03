@@ -27,6 +27,11 @@ defmodule API.CurrenciesSyncWorker do
     {:noreply, state}
   end
 
+  def handle_info(_code, _state) do
+    {:noreply}
+  end
+
+
   # TODO find normal name for func
   def infiniteSync do
     #sync()
