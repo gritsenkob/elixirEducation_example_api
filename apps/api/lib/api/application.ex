@@ -5,13 +5,11 @@ defmodule API.Application do
   # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec
-
-    { :ok, pid } = API.CurrenciesSyncWorker.start_link()
-    GenServer.cast(pid, :sync)
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(APIWeb.Endpoint, [])
+      supervisor(APIWeb.Endpoint, []),
+      worker(QuantumPhoenix.Scheduler, [])
       # Start your own worker by calling: API.Worker.start_link(arg1, arg2, arg3)
       # worker(API.Worker, [arg1, arg2, arg3]),
     ]

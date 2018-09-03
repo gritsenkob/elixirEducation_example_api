@@ -23,6 +23,7 @@ defmodule API.Mixfile do
   def application do
     [
       mod: {API.Application, []},
+
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -42,7 +43,9 @@ defmodule API.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:dal, in_umbrella: true}
+      {:dal, in_umbrella: true},
+      {:quantum, "~> 2.2"},
+      {:timex, "~> 3.0"}
     ]
   end
 end

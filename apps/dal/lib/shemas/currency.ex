@@ -1,5 +1,4 @@
 defmodule DAL.Schemas.Currency do
-  @derive {Poison.Encoder, except: [:__meta__, :currencyRate]}
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -18,14 +17,16 @@ defmodule DAL.Schemas.Currency do
     timestamps()
   end
 
-  @required_fields ~w(name symbol)
-  @optional_fields ~w(id website_slug rank circulating_supply max_supply total_supply last_updated)
+  @required_fields ~w(name symbol)a
+  @optional_fields ~w(id website_slug rank circulating_supply max_supply total_supply last_updated)a
 
   def changeset(currency, params \\ %{}) do
     currency
     |> cast(params, @required_fields ++ @optional_fields)
-    #|> validate_required(@required_fields)
+    |> validate_required(@required_fields)
     |> unique_constraint(:id)
   end
+
+
 end
 

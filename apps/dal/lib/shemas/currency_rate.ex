@@ -15,13 +15,13 @@ defmodule DAL.Schemas.CurrencyRate do
     timestamps()
   end
 
-  @required_fields ~w(price currency_id)
-  @optional_fields ~w(volume_24h market_cap percent_change_1h percent_change_24h percent_change_7d)
+  @required_fields ~w(price currency_id)a
+  @optional_fields ~w(volume_24h market_cap percent_change_1h percent_change_24h percent_change_7d)a
 
   def changeset(currencyRate, params \\ :empty) do
     currencyRate
     |> cast(params, @required_fields ++ @optional_fields)
-    #|> validate_required(@required_fields)
+    |> validate_required(@required_fields)
     |> unique_constraint(:id)
   end
 end
