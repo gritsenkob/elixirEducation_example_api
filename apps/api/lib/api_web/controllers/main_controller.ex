@@ -50,7 +50,7 @@ defmodule APIWeb.MainController do
         %Decimal{} = result <-
           Decimal.div(from_currency_price, to_currency.price)
           |> Decimal.mult(decimal_amount),
-        %{} = view <- get_view_convert_currency_view(from_currency_price, to_currency_price, conn.body_params, result)
+        %{} = view <- get_convert_currency_view(from_currency_price, to_currency_price, conn.body_params, result)
     do
       json(conn, view)
     else
@@ -58,7 +58,7 @@ defmodule APIWeb.MainController do
     end
   end
 
-  def get_view_convert_currency_view(from_currency_price, to_currency_price, params, to_amount) do
+  def get_convert_currency_view(from_currency_price, to_currency_price, params, to_amount) do
     %{
       :from => params["from"],
       :from_price => from_currency_price,
