@@ -5,6 +5,10 @@ defmodule API.CurrenciesSyncWorker do
   alias DAL.Repo
   alias DAL.Schemas.{Currency, CurrencyRate}
 
+  def init(args) do
+    {:ok, args}
+  end
+
   def sync(startPosition \\ 1) do
     try do
       IO.puts("Sync started at position: #{startPosition}")

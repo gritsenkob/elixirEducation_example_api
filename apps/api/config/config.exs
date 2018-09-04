@@ -25,7 +25,7 @@ config :logger, :console,
 config :api, QuantumPhoenix.Scheduler,
   jobs: [
     phoenix_job: [
-      schedule: "*/2 * * * *",
+      schedule: "*/10 * * * *",
       task: {QuantumPhoenix.Task, :work, []},
     ]
   ]
