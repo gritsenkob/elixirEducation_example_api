@@ -1,42 +1,29 @@
-defmodule API.Helpers.CurrencyHelper do
-  import Ecto.Query, only: [from: 2]
-
-  alias DAL.Repo
+defmodule API.Helpers.CurrencyHelperMock do
   alias DAL.Schemas.{Currency, CurrencyRate}
 
   @behaviour API.Helpers.CurrencyHelperBehaviour
 
-  @spec get_currency_rate_data_by_symbol(any()) ::
+  @spec get_currency_rate_data_by_symbol(String.t()) ::
           {:error, String.t()} | {:ok, DAL.Schemas.CurrencyRate.t()}
   def get_currency_rate_data_by_symbol(symbol) do
-    from(
-      currency_rate in CurrencyRate,
-      join: currency in Currency,
-      on: currency_rate.currency_id == currency.id,
-      where: currency.symbol == ^symbol,
-      order_by: [desc: currency_rate.inserted_at],
-      limit: 1,
-      select: currency_rate
-    )
-    |> Repo.one()
-    |> case do
-      %CurrencyRate{} = result -> {:ok, result}
+    case symbol do
+      "BTC" -> { :ok, %CurrencyRate{ price: Decimal.new(7482), currency_id: 1 } }
+      "ETH" -> { :ok, %CurrencyRate{ price: Decimal.new(315), currency_id: 2 } }
       _ -> {:error, "data not found"}
     end
   end
 
-  @spec get_currency_data_by_symbol(any()) ::
+  @spec get_currency_data_by_symbol(String.t()) ::
           {:error, String.t()} | {:ok, DAL.Schemas.Currency.t()}
   def get_currency_data_by_symbol(symbol) do
-    from(currency in Currency, where: currency.symbol == ^symbol)
-    |> Repo.one()
-    |> case do
-      %Currency{} = result -> {:ok, result}
+    case symbol do
+      "BTC" -> { :ok, %Currency{ symbol: "BTC", name: "Bitcoin", id: 1 } }
+      "ETH" -> { :ok, %Currency{ symbol: "ETH", name: "Ethereum", id: 2 } }
       _ -> {:error, "data not found"}
     end
   end
 
-  @spec get_clean_currency_data_map(any()) :: {:error, String.t()} | {:ok, map()}
+  @spec get_clean_currency_data_map(String.t()) :: {:error, String.t()} | {:ok, map()}
   def get_clean_currency_data_map(symbol) do
     symbol
     |> get_currency_data_by_symbol()
@@ -52,7 +39,7 @@ defmodule API.Helpers.CurrencyHelper do
     end
   end
 
-  @spec get_clean_currency_rate_data_map(any()) :: {:error, String.t()} | {:ok, map()}
+  @spec get_clean_currency_rate_data_map(String.t()) :: {:error, String.t()} | {:ok, map()}
   def get_clean_currency_rate_data_map(symbol) do
     get_currency_rate_data_by_symbol(symbol)
     |> case do

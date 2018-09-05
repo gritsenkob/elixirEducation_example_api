@@ -1,10 +1,12 @@
 defmodule APIWeb.MainController do
   use APIWeb, :controller
-  import API.Helpers.CurrencyHelper
+
+  @currency_helper Application.get_env(:api, :dependencies)[:currency_helper]
 
   @spec get_currency(Plug.Conn.t(), any()) :: Plug.Conn.t()
   def get_currency(conn, params) do
-    get_clean_currency_data_map(params["symbol"])
+
+    @currency_helper.get_clean_currency_data_map(params["symbol"])
     |> case  do
       { :ok, data } -> json(conn, data)
       { :error, error } -> send_resp(conn, 500, error)
@@ -14,7 +16,7 @@ defmodule APIWeb.MainController do
   @spec get_currency_rate(any(), nil | keyword() | map()) :: Plug.Conn.t()
   def get_currency_rate(conn, params) do
     params["symbol"]
-    |> get_clean_currency_rate_data_map()
+    |> @currency_helper.get_clean_currency_rate_data_map()
     |> case  do
       { :ok, data } -> json(conn, data)
       { :error, error } -> send_resp(conn, 500, error)
@@ -23,10 +25,10 @@ defmodule APIWeb.MainController do
 
   @spec get_currency_full_data(any(), nil | keyword() | map()) :: Plug.Conn.t()
   def get_currency_full_data(conn, params) do
-    with { :ok, currency_rate_data_map } <- get_clean_currency_rate_data_map(params["symbol"])
+    with { :ok, currency_rate_data_map } <- @currency_helper.get_clean_currency_rate_data_map(params["symbol"])
     do
       params["symbol"]
-      |>get_clean_currency_data_map()
+      |>@currency_helper.get_clean_currency_data_map()
       |> case  do
         { :ok, data } ->
           data
@@ -41,8 +43,8 @@ defmodule APIWeb.MainController do
 
   @spec calculate_convertation(Plug.Conn.t(), any()) :: Plug.Conn.t()
   def calculate_convertation(conn, _) do
-    with { :ok, from_currency } <- get_currency_rate_data_by_symbol(conn.body_params["from"]),
-        { :ok, to_currency } <- get_currency_rate_data_by_symbol(conn.body_params["to"]),
+    with { :ok, from_currency } <- @currency_helper.get_currency_rate_data_by_symbol(conn.body_params["from"]),
+        { :ok, to_currency } <- @currency_helper.get_currency_rate_data_by_symbol(conn.body_params["to"]),
         amount when is_integer(amount) <- conn.body_params["amount"],
         decimal_amount <- Decimal.new(amount),
         %Decimal{} = from_currency_price <- from_currency.price,

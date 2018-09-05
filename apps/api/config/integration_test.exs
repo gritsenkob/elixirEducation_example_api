@@ -9,7 +9,4 @@ config :api, APIWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-
-config :api, dependencies: [currency_helper: API.Helpers.CurrencyHelperMock]
-
-config :api, tests_to_exclude: [:integration_test]
+config :api, tests_to_exclude: [:unit_test]

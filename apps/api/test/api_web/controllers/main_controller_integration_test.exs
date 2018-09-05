@@ -1,4 +1,4 @@
-defmodule APIWeb.MainControllerTest do
+defmodule APIWeb.MainControllerIntegrationTest do
   use ExUnit.Case, async: true
   #use Plug.Test
   use APIWeb.ConnCase
@@ -6,7 +6,7 @@ defmodule APIWeb.MainControllerTest do
   alias DAL.Repo
   alias DAL.Schemas.{Currency, CurrencyRate}
 
-  @moduletag :unit_test
+  @moduletag :integration_test
 
   setup _tags do
 
