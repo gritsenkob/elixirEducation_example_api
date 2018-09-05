@@ -7,6 +7,12 @@ defmodule APIWeb.RouterTest do
 
   @opts Router.init([])
 
+
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(DAL.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(DAL.Repo, {:shared, self()})
+  end
+
   test "returns currency" do
     conn = build_conn()
     |> get("/api/getCurrency/BTC")
