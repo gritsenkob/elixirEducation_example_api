@@ -1,5 +1,4 @@
 defmodule API.CurrenciesSyncWorker do
-  use GenServer
 
   import Ecto.Query, only: [from: 2]
   alias DAL.Repo
@@ -28,6 +27,7 @@ defmodule API.CurrenciesSyncWorker do
     currency = try_load_currency_from_db(currency_map["id"])
 
     currency_rate_json = get_currency_rate_json(currency_map)
+
     if currency != nil do
       if currency.last_updated != currency_map["last_updated"] do
         currency
@@ -43,6 +43,7 @@ defmodule API.CurrenciesSyncWorker do
       insert_new_currency_rate(currency_rate_json)
     end
   end
+
 
   defp get_currency_rate_json(currency_map) do
     currency_map["quotes"]["USD"]

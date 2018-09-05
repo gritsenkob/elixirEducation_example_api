@@ -4,6 +4,8 @@ defmodule APIWeb.RouterTest do
   use APIWeb.ConnCase
 
   alias APIWeb.Router
+  alias DAL.Repo
+  alias DAL.Schemas.{Currency, CurrencyRate}
 
   @opts Router.init([])
 
@@ -11,6 +13,21 @@ defmodule APIWeb.RouterTest do
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(DAL.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(DAL.Repo, {:shared, self()})
+
+    Currency.changeset(%Currency{}, %{ :symbol => "BTC", :name => "Bitcoin", :id => 1 })
+    |> Repo.insert()
+
+    CurrencyRate.changeset(%CurrencyRate{}, %{ :price => 7156, :currency_id => 1 })
+    |> Repo.insert()
+
+
+    Currency.changeset(%Currency{}, %{ :symbol => "ETH", :name => "Ethereum", :id => 2 })
+    |> Repo.insert()
+
+    CurrencyRate.changeset(%CurrencyRate{}, %{ :price => 315, :currency_id => 2 })
+    |> Repo.insert()
+
+    :ok
   end
 
   test "returns currency" do
