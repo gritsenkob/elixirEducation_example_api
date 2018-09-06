@@ -1,30 +1,11 @@
-defmodule APIWeb.MainControllerIntegrationTest do
+defmodule APIWeb.Test.MainControllerIntegrationTest do
   use ExUnit.Case, async: true
   #use Plug.Test
   use APIWeb.ConnCase
 
-  alias DAL.Repo
-  alias DAL.Schemas.{Currency, CurrencyRate}
 
   @moduletag :integration_test
 
-  setup _tags do
-
-    Currency.changeset(%Currency{}, %{ :symbol => "BTC", :name => "Bitcoin", :id => 1 })
-    |> Repo.insert()
-
-    CurrencyRate.changeset(%CurrencyRate{}, %{ :price => 7156, :currency_id => 1 })
-    |> Repo.insert()
-
-
-    Currency.changeset(%Currency{}, %{ :symbol => "ETH", :name => "Ethereum", :id => 2 })
-    |> Repo.insert()
-
-    CurrencyRate.changeset(%CurrencyRate{}, %{ :price => 315, :currency_id => 2 })
-    |> Repo.insert()
-
-    :ok
-  end
 
   test "returns currency" do
     conn = build_conn()

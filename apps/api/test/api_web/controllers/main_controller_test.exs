@@ -1,4 +1,4 @@
-defmodule APIWeb.MainControllerTest do
+defmodule APIWeb.Test.MainControllerTest do
   use ExUnit.Case, async: true
   #use Plug.Test
   use APIWeb.ConnCase
@@ -25,6 +25,7 @@ defmodule APIWeb.MainControllerTest do
 
     :ok
   end
+
 
   test "returns currency" do
     conn = build_conn()

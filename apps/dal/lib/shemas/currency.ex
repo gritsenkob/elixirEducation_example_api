@@ -27,6 +27,23 @@ defmodule DAL.Schemas.Currency do
     |> unique_constraint(:id)
   end
 
+  def sync_changeset(currency, params \\ %{}) do
+    currency
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
+    |> unique_constraint(:id)
+    |> validate_update_time(params["last_updated"])
+  end
+
+  defp validate_update_time(changeset, updated_at, options \\ %{}) do
+    validate_change(changeset, :last_updated, fn _, last_updated ->
+      case last_updated != updated_at do
+        true -> []
+        false -> [{:last_updated, options[:message] || "To new to update"}]
+      end
+    end)
+  end
+
 
 end
 
