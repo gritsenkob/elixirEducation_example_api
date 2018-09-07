@@ -36,10 +36,6 @@ defmodule APIWeb.Test.CurrencyHelperTest do
   test "returns currency rate data by symbol" do
     {:ok, currency_rate} = CurrencyHelper.get_currency_rate_data_by_symbol("BTC")
 
-
-  test "returns currency rate data by symbol" do
-    {:ok, currency_rate} = CurrencyHelper.get_currency_rate_data_by_symbol("BTC")
-
     #currency_rate |> IO.inspect()
 
     assert currency_rate.price > 0
